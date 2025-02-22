@@ -3,6 +3,7 @@ from vector_store import FlowerShopVectorStore
 from langchain_core.messages import HumanMessage, AIMessage
 
 from chatbot import app
+from tools import customers_database, data_protection_checks
 
 st.set_page_config(layout="wide", page_title="flower shop chatbot")
 
@@ -46,4 +47,7 @@ with main_col:
 
 # state variables
 with right_col:
-    st.text(st.session_state.message_history)
+    st.title("Customer Database")
+    st.write(customers_database)
+    st.title("Data Protection Checks")
+    st.write(data_protection_checks)

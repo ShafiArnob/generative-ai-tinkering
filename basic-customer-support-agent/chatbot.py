@@ -3,7 +3,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import AzureChatOpenAI
 from langgraph.prebuilt import ToolNode
 
-from tools import search_for_product_reccommendations, query_knowledge_base
+from tools import (
+    search_for_product_reccommendations,
+    query_knowledge_base,
+    data_protection_check,
+    create_new_customer,
+)
 
 import os
 from dotenv import load_dotenv
@@ -39,7 +44,12 @@ llm = AzureChatOpenAI(
     model="gpt-4o-mini",
 )
 
-tools = [query_knowledge_base, search_for_product_reccommendations]
+tools = [
+    query_knowledge_base,
+    search_for_product_reccommendations,
+    data_protection_check,
+    create_new_customer,
+]
 
 llm_with_prompt = chat_template | llm.bind_tools(tools)
 
