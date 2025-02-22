@@ -6,7 +6,6 @@ from chatbot import app
 
 st.set_page_config(layout="wide", page_title="flower shop chatbot")
 
-vector_store = FlowerShopVectorStore()
 
 if "message_history" not in st.session_state:
     st.session_state.message_history = [
@@ -19,9 +18,7 @@ left_col, main_col, right_col = st.columns([1, 2, 1])
 with left_col:
     if st.button("Clear Chat"):
         st.session_state.message_history = []
-
-    collection_choice = st.radio("Which collection?", ["faqs", "inventory"])
-
+    # collection_choice = st.radio("Which collection?", ["faqs", "inventory"])
 
 # chat history and input
 with main_col:

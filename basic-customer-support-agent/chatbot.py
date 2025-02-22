@@ -1,11 +1,15 @@
 from langgraph.graph import StateGraph, MessagesState
 from langchain_core.prompts import ChatPromptTemplate
-
 from langchain_openai import AzureChatOpenAI
+from langgraph.prebuilt import ToolNode
+
+from tools import search_for_product_reccommendations, query_knowledge_base
+
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
@@ -35,7 +39,9 @@ llm = AzureChatOpenAI(
     model="gpt-4o-mini",
 )
 
-llm_with_prompt = chat_template | llm
+tools = [query_knowledge_base, search_for_product_reccommendations]
+
+llm_with_prompt = chat_template | llm.bind_tools(tools)
 
 
 def call_agent(message_state: MessagesState):
@@ -43,8 +49,24 @@ def call_agent(message_state: MessagesState):
     return {"messages": [response]}
 
 
+def is_there_tool_calls(state: MessagesState):
+    last_message = state["messages"][-1]
+    if last_message.tool_calls:
+        return "tool_node"
+    else:
+        return "__end__"
+
+
 graph = StateGraph(MessagesState)
+
+tool_node = ToolNode(tools)
+
 graph.add_node("agent", call_agent)
+graph.add_node("tool_node", tool_node)
+
+graph.add_conditional_edges("agent", is_there_tool_calls)
+
+graph.add_edge("tool_node", "agent")
 graph.add_edge("agent", "__end__")
 graph.set_entry_point("agent")
 
