@@ -8,6 +8,8 @@ from tools import (
     query_knowledge_base,
     data_protection_check,
     create_new_customer,
+    place_order,
+    retrieve_exixting_customer_orders,
 )
 
 import os
@@ -27,7 +29,8 @@ You are a customer service chatbot for a flower shop company. You can help the c
 
 1. Answer questions the user might have relating to serivces offered
 2. Recommend products to the user based on their preferences
-3. Retrieve or create customer profiles. If the customer already has a profile, perform a data protection check to retrieve their details. If not, create them a profile.
+3. Help the customer check on an existing order, or place a new order
+4. To place and manage orders, you will need a customer profile (with an associated id). If the customer already has a profile, perform a data protection check to retrieve their details. If not, create them a profile. You cannot place an order until you have the items ID (from the product search) and the customer ID
 
 #Tone
 
@@ -49,6 +52,8 @@ tools = [
     search_for_product_reccommendations,
     data_protection_check,
     create_new_customer,
+    place_order,
+    retrieve_exixting_customer_orders,
 ]
 
 llm_with_prompt = chat_template | llm.bind_tools(tools)
