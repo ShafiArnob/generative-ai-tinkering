@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/openai": "^1.0.0-alpha.20230928.1",
+    "@azure/search-documents": "^12.1.0",
     "dotenv": "^16.4.7",
     "openai": "^4.86.1"
   }
