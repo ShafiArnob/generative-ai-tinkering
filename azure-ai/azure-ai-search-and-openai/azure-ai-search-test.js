@@ -105,15 +105,22 @@ class AzureSearchAssistant {
 
       // Process and return results
       const processedResults = [];
+      console.log("### Result Start ###");
+
       for await (const result of searchResults.results) {
+        // console.log(result, "\n");
+
         processedResults.push({
           score: result.score,
           title: result.document.title,
-          content: result.document.content,
-          url: result.document.url,
+          content: result.document.chunk,
           highlights: result.highlights,
         });
       }
+
+      console.log(processedResults);
+
+      console.log("### Result End ###");
 
       return processedResults;
     } catch (error) {
@@ -124,7 +131,10 @@ class AzureSearchAssistant {
 
   // Generate AI-powered answer based on search results
   async generateAnswer(query, searchResults) {
-    const context = searchResults.map((result) => result.content).join("\n\n");
+    const context = searchResults
+      .map((result) => `title: ${result.title} \n content: ${result.content}`)
+      .join("\n\n");
+    console.log("###  Context:   ### \n", context);
 
     const messages = [
       {
@@ -139,8 +149,8 @@ class AzureSearchAssistant {
     ];
 
     const completionOptions = {
-      maxTokens: 500,
-      temperature: 0.3,
+      maxTokens: 3000,
+      temperature: 0,
     };
 
     const response = await this.openAIClient.getChatCompletions(
@@ -193,7 +203,7 @@ async function main() {
       "Which contract has the shortest payment period after receipt of products?";
     const result = await assistant.processQuery(query);
 
-    console.log("Search Results:", result.searchResults);
+    // console.log("Search Results:", result.searchResults);
     console.log("AI-Generated Answer:", result.answer);
   } catch (error) {
     console.error("Error:", error);
