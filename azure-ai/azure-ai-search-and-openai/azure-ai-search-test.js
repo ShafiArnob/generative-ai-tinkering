@@ -148,15 +148,16 @@ class AzureSearchAssistant {
       },
     ];
 
-    const completionOptions = {
-      maxTokens: 3000,
-      temperature: 0,
-    };
-
     const response = await this.openAIClient.getChatCompletions(
       this.deploymentName,
       messages,
-      completionOptions
+      {
+        maxTokens: 3000,
+        temperature: 0.1,
+        topP: 0.95,
+        frequencyPenalty: 0.2,
+        presencePenalty: 0.1,
+      }
     );
 
     return response.choices[0].message.content;
